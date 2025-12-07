@@ -96,16 +96,16 @@
             flex: 1;
             display: flex;
             flex-direction: column;
-            padding: 24px;
+            padding: 16px;
             overflow: hidden;
         }
 
         .settings-panel {
             background: var(--color-background-card);
             border-radius: 4px;
-            padding: 0 24px;
-            margin-top: 12px;
-            margin-bottom: 12px;
+            padding: 0 16px;
+            margin-top: 8px;
+            margin-bottom: 8px;
             border: 1px solid var(--color-border);
             max-height: 0;
             opacity: 0;
@@ -114,13 +114,13 @@
         }
 
         .settings-panel.show {
-            max-height: 300px;
+            max-height: 250px;
             opacity: 1;
-            padding: 24px;
+            padding: 16px;
         }
 
         .settings-section {
-            margin-bottom: 24px;
+            margin-bottom: 16px;
         }
 
         .settings-section:last-child {
@@ -128,25 +128,25 @@
         }
 
         .settings-title {
-            font-size: 16px;
+            font-size: 13px;
             font-weight: 500;
-            margin-bottom: 12px;
+            margin-bottom: 8px;
             color: var(--color-text);
         }
 
         .settings-row {
             display: flex;
-            gap: 16px;
+            gap: 12px;
             align-items: center;
-            margin-bottom: 16px;
+            margin-bottom: 12px;
         }
 
         .model-selector {
             flex: 1;
-            padding: 12px 16px;
+            padding: 8px 12px;
             border: 1px solid var(--color-border-light);
             border-radius: 4px;
-            font-size: 14px;
+            font-size: 13px;
             font-family: inherit;
             background: var(--color-background-card);
         }
@@ -166,9 +166,9 @@
             background: var(--color-primary);
             color: var(--color-text-white);
             border: none;
-            padding: 12px 12px;
+            padding: 8px 10px;
             border-radius: 4px;
-            font-size: 13px;
+            font-size: 12px;
             cursor: pointer;
             font-weight: 500;
             transition: background 0.2s ease;
@@ -186,26 +186,26 @@
 
         /* Input area for manual text entry */
         .input-section {
-            margin-bottom: 20px;
+            margin-bottom: 12px;
         }
 
         .input-label {
-            font-size: 12px;
+            font-size: 11px;
             font-weight: 500;
-            margin-top: 8px;
-            margin-bottom: 8px;
+            margin-top: 4px;
+            margin-bottom: 6px;
             color: var(--color-text);
         }
 
         .claim-input {
             width: 100%;
-            min-height: 100px;
-            padding: 16px;
+            min-height: 80px;
+            padding: 10px;
             border: 1px solid var(--color-border);
             border-radius: 4px;
             font-family: inherit;
-            font-size: 14px;
-            line-height: 1.5;
+            font-size: 13px;
+            line-height: 1.4;
             resize: vertical;
             box-sizing: border-box;
         }
@@ -222,15 +222,15 @@
 
         .action-buttons {
             display: flex;
-            gap: 16px;
-            margin-bottom: 20px;
+            gap: 10px;
+            margin-bottom: 12px;
         }
 
         .action-btn {
             background: var(--color-primary);
             color: var(--color-text-white);
             border: none;
-            padding: 12px 12px;
+            padding: 8px 10px;
             border-radius: 4px;
             font-size: 12px;
             font-weight: 500;
@@ -270,7 +270,7 @@
         }
 
         .results-header {
-            padding: 12px 12px;
+            padding: 8px 12px;
             border-bottom: 1px solid var(--color-border);
             background: var(--color-background-subtle);
             display: flex;
@@ -280,7 +280,7 @@
 
         .results-header h3 {
             margin: 0;
-            font-size: 12px;
+            font-size: 11px;
             font-weight: 500;
             color: var(--color-text);
         }
@@ -313,10 +313,10 @@
 
         .results-content {
             flex: 1;
-            padding: 24px;
+            padding: 16px;
             overflow-y: auto;
-            font-size: 15px;
-            line-height: 1.7;
+            font-size: 13px;
+            line-height: 1.5;
             color: var(--color-text);
         }
 
@@ -328,12 +328,12 @@
 
         /* Verdict styling */
         .verdict {
-            padding: 16px;
+            padding: 12px;
             border-radius: 4px;
-            margin-bottom: 20px;
+            margin-bottom: 14px;
             display: flex;
             align-items: center;
-            gap: 12px;
+            gap: 10px;
         }
 
         .verdict.true {
@@ -363,9 +363,9 @@
         /* Confidence badge */
         .confidence-badge {
             margin-left: auto;
-            padding: 4px 12px;
-            border-radius: 12px;
-            font-size: 12px;
+            padding: 3px 10px;
+            border-radius: 10px;
+            font-size: 11px;
             font-weight: 500;
         }
 
@@ -388,14 +388,14 @@
         .search-badge {
             display: inline-flex;
             align-items: center;
-            gap: 6px;
-            padding: 8px 16px;
+            gap: 5px;
+            padding: 6px 12px;
             background: var(--color-info-light);
             border: 1px solid var(--color-info-border);
             border-radius: 4px;
-            font-size: 13px;
+            font-size: 12px;
             color: var(--color-info-dark);
-            margin-bottom: 16px;
+            margin-bottom: 12px;
         }
 
         .search-badge.offline {
@@ -407,32 +407,32 @@
         /* Error display */
         .error-container {
             text-align: center;
-            padding: 12px 12px;
+            padding: 10px;
         }
 
         .error-icon {
-            font-size: 48px;
-            margin-bottom: 16px;
+            font-size: 36px;
+            margin-bottom: 12px;
         }
 
         .error-title {
-            font-size: 18px;
+            font-size: 15px;
             font-weight: 600;
             color: var(--color-danger);
-            margin-bottom: 16px;
+            margin-bottom: 12px;
         }
 
         .error-suggestions {
             text-align: left;
             list-style: none;
             padding: 0;
-            margin: 0 0 24px 0;
+            margin: 0 0 16px 0;
         }
 
         .error-suggestions li {
-            padding: 8px 0;
+            padding: 6px 0;
             color: var(--color-text-secondary);
-            font-size: 14px;
+            font-size: 13px;
             border-bottom: 1px solid var(--color-border);
         }
 
@@ -450,9 +450,9 @@
             background: var(--color-primary);
             color: var(--color-text-white);
             border: none;
-            padding: 12px 24px;
-            border-radius: 6px;
-            font-size: 14px;
+            padding: 8px 16px;
+            border-radius: 4px;
+            font-size: 13px;
             font-weight: 500;
             cursor: pointer;
             transition: all 0.2s ease;
@@ -465,18 +465,18 @@
 
         /* Progress bar */
         .progress-container {
-            padding: 24px;
+            padding: 12px 16px;
             background: var(--color-background-subtle);
             border-bottom: 1px solid var(--color-border);
         }
 
         .progress-bar {
             width: 100%;
-            height: 6px;
+            height: 4px;
             background: var(--color-border);
-            border-radius: 3px;
+            border-radius: 2px;
             overflow: hidden;
-            margin-bottom: 16px;
+            margin-bottom: 10px;
         }
 
         .progress-fill {
@@ -505,34 +505,34 @@
         .progress-text {
             text-align: center;
             color: var(--color-text);
-            font-size: 14px;
+            font-size: 12px;
             font-weight: 500;
         }
 
         /* Sources styling */
         .sources-section {
-            margin-top: 24px;
-            padding-top: 20px;
+            margin-top: 16px;
+            padding-top: 12px;
             border-top: 1px solid var(--color-border);
         }
 
         .sources-title {
-            font-size: 14px;
+            font-size: 12px;
             font-weight: 600;
-            margin-bottom: 8px;
+            margin-bottom: 6px;
             color: var(--color-text);
         }
 
         .sources-list {
             margin: 0;
-            padding-left: 20px;
+            padding-left: 16px;
             list-style-type: disc;
         }
 
         .sources-list li {
-            margin-bottom: 6px;
-            font-size: 13px;
-            line-height: 1.4;
+            margin-bottom: 4px;
+            font-size: 12px;
+            line-height: 1.3;
         }
 
         .sources-list a {
