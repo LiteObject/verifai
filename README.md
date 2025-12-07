@@ -1,194 +1,132 @@
-# VerifAI — AI-Powered Fact-Checking in Your Browser
+# VerifAI
 
-Select any text on any webpage → instantly fact-check it with a **local AI** powered by Ollama.
+A Chrome extension for fact-checking text using local AI models via Ollama.
 
-VerifAI is a fast, beautiful, **privacy-first** Chrome extension that turns your browser into a live fact-checking machine. Powered by local LLMs running on your own machine via Ollama, it analyzes claims and returns a clear verdict — all without sending your data to external servers.
+## What it does
 
-## Why VerifAI Exists
+Select any text on a webpage, click a button, and get a fact-check verdict powered by a local LLM. No cloud APIs, no data collection, everything runs on your machine.
 
-- Misinformation spreads faster than ever
-- Manual fact-checking is slow and tedious
-- Most "fact-check" extensions require cloud APIs and collect your data
+## Why I built this
 
-VerifAI fixes that: one highlight → accurate, locally-processed answer with **zero data collection**.
+Most fact-checking tools send your data to external servers. I wanted something that:
+- Runs entirely locally
+- Doesn't require API keys
+- Can search the web for verification
+- Gives clear verdicts with sources
 
 ## Features
 
-### 🎯 Easy Fact-Checking
-- **Select-to-check**: Highlight any claim and click the floating button
-- **Right-click context menu**: "Fact-check with VerifAI"
-- **Keyboard shortcut**: Ctrl+Enter in the side panel
-- **Manual entry**: Paste any claim directly into the side panel
+**Fact-Checking**
+- Select text and click the floating button
+- Right-click context menu option
+- Manual entry in the side panel
+- Keyboard shortcut (Ctrl+Enter)
 
-### 🤖 Local AI Integration
-- **100% Local**: Uses Ollama running on your machine
-- **Model Selection**: Choose from all your installed Ollama models
-- **Tool-Capable Models**: Highlights models with function-calling support (🔧)
-- **No API Keys Required**: Everything runs locally
+**Local AI**
+- Uses Ollama models running on your machine
+- Automatically detects which models support function calling
+- No external API calls for AI processing
 
-### 🌐 Web Search Integration
-- **Live verification**: AI can search the web for current information
-- **DuckDuckGo search**: No API key required
-- **Multiple searches**: LLM decides what to search based on the claim
-- **Source credibility**: 5-tier system prioritizing reputable sources
-- **Source display**: Clickable links sorted by reliability
+**Web Search**
+- AI can search DuckDuckGo to verify claims
+- Sources ranked by credibility (government, academic, news, etc.)
+- Results displayed with clickable links
 
-### 📊 Clear Verdicts
-- **TRUE** ✅ - Claim is accurate
-- **FALSE** ❌ - Claim is inaccurate
-- **PARTIALLY TRUE** ⚠️ - Claim contains some truth but is misleading
-- **UNVERIFIABLE** ❓ - Cannot be verified with available information
-- **Confidence levels**: HIGH / MEDIUM / LOW
+**Verdicts**
+- TRUE, FALSE, PARTIALLY TRUE, or UNVERIFIABLE
+- Confidence level (HIGH, MEDIUM, LOW)
+- Supporting evidence and sources
 
-### 🎨 Modern Interface
-- Clean side panel UI with progress indicators
-- Dark mode support (follows system preference)
-- Animated loading states with detailed progress
-- Copy results with one click
-- User-friendly error messages with suggestions
-- CSS variables for consistent theming
+## Requirements
 
-## Prerequisites
-
-1. **Install Ollama**: Visit [https://ollama.ai](https://ollama.ai) and install Ollama
-
-2. **Pull a Model** (recommend models with tool support):
+1. Install [Ollama](https://ollama.ai)
+2. Pull a model:
    ```bash
-   # Recommended models for fact-checking
-   ollama pull llama3.1
    ollama pull qwen2.5
-   ollama pull mistral
    ```
-
-3. **Start Ollama**:
+3. Start Ollama:
    ```bash
    ollama serve
    ```
 
 ## Installation
 
-1. **Clone this repository**:
+1. Clone the repo:
    ```bash
    git clone https://github.com/LiteObject/verifai.git
-   cd verifai
    ```
 
-2. **Load the extension in Chrome**:
-   - Open Chrome and navigate to `chrome://extensions/`
-   - Enable "Developer mode" (toggle in top-right)
-   - Click "Load unpacked"
-   - Select the `verifai` folder
+2. Open Chrome, go to `chrome://extensions/`
 
-3. **Verify installation**:
-   - The VerifAI icon should appear in your Chrome toolbar
-   - Click it to open the side panel
-   - Ensure Ollama is running and models are detected
+3. Enable "Developer mode"
+
+4. Click "Load unpacked" and select the `verifai` folder
 
 ## Usage
 
-### Method 1: Floating Button
-1. Select text on any webpage
-2. Click the "✓ Fact-check" button that appears
-3. View results in the side panel
+**Option 1:** Select text on any page, click the floating "Fact-check" button
 
-### Method 2: Context Menu
-1. Select text on any webpage
-2. Right-click → "Fact-check with VerifAI"
-3. View results in the side panel
+**Option 2:** Select text, right-click, choose "Fact-check with VerifAI"
 
-### Method 3: Side Panel
-1. Click the VerifAI icon to open the side panel
-2. Paste or type a claim in the text area
-3. Click "🔍 Fact-Check" or press Ctrl+Enter
+**Option 3:** Open the side panel, paste text, click Fact-Check
 
 ## Project Structure
 
 ```
 verifai/
 ├── manifest.json       # Extension manifest (V3)
-├── sidepanel.html      # Main side panel interface with CSS
-├── sidepanel.js        # Side panel logic & Ollama integration
-├── content.js          # Content script for text selection
-├── background.js       # Service worker & context menu
-├── icons/              # Extension icons (PNG)
-└── README.md           # This file
+├── sidepanel.html      # UI and styles
+├── sidepanel.js        # Main logic, Ollama integration
+├── content.js          # Text selection handling
+├── background.js       # Service worker, context menu
+├── icons/              # Extension icon (SVG)
+└── README.md
 ```
 
 ## Configuration
 
-### Configuration Options
-Edit the `CONFIG` object at the top of `sidepanel.js`:
+Edit the `CONFIG` object in `sidepanel.js`:
+
 ```javascript
 const CONFIG = {
     OLLAMA_ENDPOINT: 'http://localhost:11434',
-    REQUEST_TIMEOUT: 120000,      // 2 minutes
-    MAX_SEARCH_ITERATIONS: 3,     // Web search limit
-    MAX_RETRIES: 3,               // Network retry attempts
-    RETRY_BASE_DELAY: 1000,       // Exponential backoff base
-    TOOL_CACHE_DURATION: 3600000, // 1 hour cache
+    REQUEST_TIMEOUT: 120000,
+    MAX_SEARCH_ITERATIONS: 3,
+    MAX_RETRIES: 3,
 };
 ```
 
-### Recommended Models
-Models with tool/function-calling support (marked with 🔧):
-- `qwen2.5` - Excellent for reasoning
-- `llama3.1` - Great balance of speed and accuracy
-- `mistral` / `mistral-nemo` - Fast and capable
-- `mixtral` - Larger but more thorough
+## Recommended Models
 
-## Roadmap
-
-- [x] Phase 1: Basic extension structure & UI
-- [x] Phase 2: Text selection & context menu
-- [x] Phase 3: Ollama integration with model selection
-- [x] Phase 4: Web search tool integration
-- [x] Phase 5: Enhanced verdict display with sources
-- [x] Phase 6: Source credibility & reliability tiers
-- [x] Phase 7: Error handling, retry logic & polish
-
-## Privacy
-
-VerifAI is **100% privacy-focused**:
-- All AI processing happens locally on your machine
-- No data is sent to external servers
-- No analytics or tracking
-- No API keys required
+These models work well for fact-checking:
+- `qwen2.5` - Good reasoning, supports function calling
+- `llama3.1` - Balanced speed and accuracy
+- `mistral` - Fast responses
 
 ## Troubleshooting
 
-### "No models found"
-- Ensure Ollama is running: `ollama serve`
-- Check available models: `ollama list`
-- Click "Refresh" in settings
+**No models showing up?**
+- Make sure Ollama is running (`ollama serve`)
+- Check `ollama list` to see installed models
+- Click Refresh in the extension settings
 
-### Side panel doesn't open
-- Ensure you're using Chrome 114+
-- Reload the extension
-- Check for errors in `chrome://extensions/`
+**Side panel won't open?**
+- Requires Chrome 114 or newer
+- Try reloading the extension
 
-### AI processing is slow
-- Use a smaller model (e.g., `qwen2.5:7b`)
-- Ensure your system has enough RAM
-- Check Ollama logs for issues
+**Slow responses?**
+- Try a smaller model variant
+- Check available system memory
 
-## Contributing
+## Privacy
 
-1. Fork the repository
-2. Create a feature branch: `git checkout -b feature-name`
-3. Make your changes
-4. Submit a pull request
+All processing happens locally. No data leaves your machine. No analytics, no tracking.
 
 ## License
 
-This project is open source. See the repository for license details.
+Open source. See repository for details.
 
 ## Links
 
-- [Ollama](https://ollama.ai) - Local AI runtime
-- [Chrome Extensions Docs](https://developer.chrome.com/docs/extensions/)
-- [Side Panel API](https://developer.chrome.com/docs/extensions/reference/sidePanel/)
-
----
-
-**One highlight. One truth.**
-Stop wondering. Start verifying.
+- [Ollama](https://ollama.ai)
+- [Chrome Extensions Documentation](https://developer.chrome.com/docs/extensions/)
