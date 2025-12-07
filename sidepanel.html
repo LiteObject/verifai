@@ -74,31 +74,6 @@
             flex-direction: column;
         }
 
-        .header {
-            background: var(--color-primary);
-            color: var(--color-text-white);
-            padding: 20px 24px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            border-bottom: 1px solid var(--color-primary-dark);
-        }
-
-        .header h1 {
-            margin: 0;
-            font-size: 22px;
-            font-weight: 500;
-            flex: 1;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-
-        /* .header h1::before {
-            content: '✓';
-            font-size: 20px;
-        } */
-
         .settings-btn {
             background: var(--color-overlay-light);
             border: 1px solid var(--color-overlay-medium);
@@ -383,11 +358,6 @@
 
         .verdict-icon {
             font-size: 12px;
-        }
-
-        .verdict-text {
-            /* font-weight: 500;
-            font-size: 14px; */
         }
 
         /* Confidence badge */
@@ -700,10 +670,6 @@
 </head>
 
 <body>
-    <!-- <div class="header">
-        <h1>VerifAI</h1>
-    </div> -->
-
     <div class="content-area">
         <button id="btnSettings" class="settings-btn">Settings</button>
         <div id="settingsPanel" class="settings-panel">
