@@ -1,0 +1,24 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128">
+  <defs>
+    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#87C38F"/>
+      <stop offset="100%" style="stop-color:#226F54"/>
+    </linearGradient>
+  </defs>
+  <!-- Background circle -->
+  <circle cx="64" cy="64" r="60" fill="url(#bg)"/>
+  <!-- Checkmark -->
+  <path d="M28 62 L52 86 L90 40" 
+        fill="none" 
+        stroke="white" 
+        stroke-width="11" 
+        stroke-linecap="round" 
+        stroke-linejoin="round"/>
+  <!-- AI Sparkles -->
+  <g fill="white" opacity="0.9">
+    <!-- Top right sparkle -->
+    <path d="M100 28 L102 22 L104 28 L110 30 L104 32 L102 38 L100 32 L94 30 Z"/>
+    <!-- Small sparkle -->
+    <path d="M108 48 L109 44 L110 48 L114 49 L110 50 L109 54 L108 50 L104 49 Z"/>
+  </g>
+</svg>

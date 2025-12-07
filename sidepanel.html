@@ -1,0 +1,752 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <title>VerifAI - Fact Checker</title>
+    <style>
+        :root {
+            /* Primary colors */
+            --color-primary: #87C38F;
+            --color-primary-dark: #226F54;
+            --color-primary-light: rgba(76, 175, 80, 0.1);
+            --color-primary-muted: rgba(76, 175, 80, 0.2);
+            --color-primary-text: #2e7d32;
+
+            /* Semantic colors */
+            --color-danger: #f44336;
+            --color-danger-dark: #d32f2f;
+            --color-danger-light: rgba(244, 67, 54, 0.1);
+            --color-danger-muted: rgba(244, 67, 54, 0.2);
+            --color-danger-text: #c62828;
+
+            --color-warning: #ff9800;
+            --color-warning-dark: #f57c00;
+            --color-warning-light: rgba(255, 152, 0, 0.1);
+            --color-warning-muted: rgba(255, 152, 0, 0.2);
+
+            --color-info: #2196f3;
+            --color-info-dark: #1976d2;
+            --color-info-light: rgba(33, 150, 243, 0.1);
+            --color-info-border: rgba(33, 150, 243, 0.3);
+
+            --color-neutral: #9e9e9e;
+            --color-neutral-dark: #757575;
+            --color-neutral-light: rgba(158, 158, 158, 0.1);
+            --color-neutral-border: rgba(158, 158, 158, 0.3);
+
+            /* Text colors */
+            --color-text: rgba(0, 0, 0, 0.87);
+            --color-text-secondary: rgba(0, 0, 0, 0.54);
+            --color-text-placeholder: rgba(0, 0, 0, 0.38);
+            --color-text-white: white;
+
+            /* Background colors */
+            --color-background: #fafafa;
+            --color-background-alt: #f5f5f5;
+            --color-background-card: white;
+            --color-background-subtle: #f8f9fa;
+            --color-background-hover: #e8f5e9;
+
+            /* Border colors */
+            --color-border: #e0e0e0;
+            --color-border-light: #ddd;
+
+            /* Button colors */
+            --color-btn-disabled: #ccc;
+
+            /* Overlay colors */
+            --color-overlay-light: rgba(255, 255, 255, 0.2);
+            --color-overlay-medium: rgba(255, 255, 255, 0.3);
+            --color-overlay-strong: rgba(255, 255, 255, 0.5);
+            --color-overlay-dark: rgba(0, 0, 0, 0.8);
+        }
+
+        body {
+            font-family: 'Roboto', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            margin: 0;
+            padding: 0;
+            width: 100%;
+            height: 100vh;
+            background: linear-gradient(135deg, var(--color-background) 0%, var(--color-background-alt) 100%);
+            color: var(--color-text);
+            display: flex;
+            flex-direction: column;
+        }
+
+        .header {
+            background: var(--color-primary);
+            color: var(--color-text-white);
+            padding: 20px 24px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid var(--color-primary-dark);
+        }
+
+        .header h1 {
+            margin: 0;
+            font-size: 22px;
+            font-weight: 500;
+            flex: 1;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        /* .header h1::before {
+            content: '✓';
+            font-size: 20px;
+        } */
+
+        .settings-btn {
+            background: var(--color-overlay-light);
+            border: 1px solid var(--color-overlay-medium);
+            color: var(--color-text-white);
+            font-size: 12px;
+            padding: 8px 16px;
+            cursor: pointer;
+            border-radius: 4px;
+            flex-shrink: 0;
+            transition: all 0.2s ease;
+        }
+
+        .settings-btn:hover {
+            background: var(--color-overlay-medium);
+            border-color: var(--color-overlay-strong);
+        }
+
+        .content-area {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            padding: 24px;
+            overflow: hidden;
+        }
+
+        .settings-panel {
+            background: var(--color-background-card);
+            border-radius: 4px;
+            padding: 0 24px;
+            margin-top: 12px;
+            margin-bottom: 12px;
+            border: 1px solid var(--color-border);
+            max-height: 0;
+            opacity: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease, opacity 0.3s ease, padding 0.3s ease;
+        }
+
+        .settings-panel.show {
+            max-height: 300px;
+            opacity: 1;
+            padding: 24px;
+        }
+
+        .settings-section {
+            margin-bottom: 24px;
+        }
+
+        .settings-section:last-child {
+            margin-bottom: 0;
+        }
+
+        .settings-title {
+            font-size: 16px;
+            font-weight: 500;
+            margin-bottom: 12px;
+            color: var(--color-text);
+        }
+
+        .settings-row {
+            display: flex;
+            gap: 16px;
+            align-items: center;
+            margin-bottom: 16px;
+        }
+
+        .model-selector {
+            flex: 1;
+            padding: 12px 16px;
+            border: 1px solid var(--color-border-light);
+            border-radius: 4px;
+            font-size: 14px;
+            font-family: inherit;
+            background: var(--color-background-card);
+        }
+
+        .model-selector option.tool-capable {
+            font-weight: 600;
+            color: var(--color-primary-text);
+        }
+
+        .model-selector:focus {
+            outline: none;
+            border-color: var(--color-primary);
+            box-shadow: 0 0 0 2px var(--color-primary-light);
+        }
+
+        .refresh-models-btn {
+            background: var(--color-primary);
+            color: var(--color-text-white);
+            border: none;
+            padding: 12px 16px;
+            border-radius: 4px;
+            font-size: 13px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: background 0.2s ease;
+        }
+
+        .refresh-models-btn:hover {
+            background: var(--color-primary-dark);
+        }
+
+        .model-status {
+            font-size: 12px;
+            color: var(--color-text-secondary);
+            margin-top: 8px;
+        }
+
+        /* Input area for manual text entry */
+        .input-section {
+            margin-bottom: 20px;
+        }
+
+        .input-label {
+            font-size: 12px;
+            font-weight: 500;
+            margin-top: 8px;
+            margin-bottom: 8px;
+            color: var(--color-text);
+        }
+
+        .claim-input {
+            width: 100%;
+            min-height: 100px;
+            padding: 16px;
+            border: 1px solid var(--color-border);
+            border-radius: 4px;
+            font-family: inherit;
+            font-size: 14px;
+            line-height: 1.5;
+            resize: vertical;
+            box-sizing: border-box;
+        }
+
+        .claim-input:focus {
+            outline: none;
+            border-color: var(--color-primary);
+            box-shadow: 0 0 0 2px var(--color-primary-light);
+        }
+
+        .claim-input::placeholder {
+            color: var(--color-text-secondary);
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 16px;
+            margin-bottom: 20px;
+        }
+
+        .action-btn {
+            background: var(--color-primary);
+            color: var(--color-text-white);
+            border: none;
+            padding: 12px 12px;
+            border-radius: 4px;
+            font-size: 12px;
+            font-weight: 500;
+            cursor: pointer;
+            flex: 1;
+            letter-spacing: 0.25px;
+            transition: all 0.2s ease;
+        }
+
+        .action-btn:hover {
+            background: var(--color-primary-dark);
+        }
+
+        .action-btn:disabled {
+            background: var(--color-btn-disabled);
+            cursor: not-allowed;
+        }
+
+        .action-btn.clear {
+            background: var(--color-danger);
+            flex: 0 0 auto;
+        }
+
+        .action-btn.clear:hover {
+            background: var(--color-danger-dark);
+        }
+
+        /* Results area */
+        .results-container {
+            flex: 1;
+            background: var(--color-background-card);
+            border-radius: 4px;
+            border: 1px solid var(--color-border);
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        .results-header {
+            padding: 12px 12px;
+            border-bottom: 1px solid var(--color-border);
+            background: var(--color-background-subtle);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .results-header h3 {
+            margin: 0;
+            font-size: 12px;
+            font-weight: 500;
+            color: var(--color-text);
+        }
+
+        .copy-btn {
+            background: var(--color-primary);
+            color: var(--color-text-white);
+            border: none;
+            padding: 6px 12px;
+            border-radius: 4px;
+            font-size: 12px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            opacity: 0;
+            transform: translateY(-2px);
+        }
+
+        .copy-btn.show {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .copy-btn:hover {
+            background: var(--color-primary-dark);
+        }
+
+        .copy-btn.copied {
+            background: var(--color-info);
+        }
+
+        .results-content {
+            flex: 1;
+            padding: 24px;
+            overflow-y: auto;
+            font-size: 15px;
+            line-height: 1.7;
+            color: var(--color-text);
+        }
+
+        .results-content:empty::before {
+            content: "Select text on any webpage and click 'Fact-check' or enter a claim above...";
+            color: var(--color-text-secondary);
+            font-style: italic;
+        }
+
+        /* Verdict styling */
+        .verdict {
+            padding: 16px;
+            border-radius: 4px;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .verdict.true {
+            background: var(--color-primary-light);
+            border: 1px solid var(--color-primary);
+        }
+
+        .verdict.false {
+            background: var(--color-danger-light);
+            border: 1px solid var(--color-danger);
+        }
+
+        .verdict.partial {
+            background: var(--color-warning-light);
+            border: 1px solid var(--color-warning);
+        }
+
+        .verdict.unverified {
+            background: var(--color-neutral-light);
+            border: 1px solid var(--color-neutral);
+        }
+
+        .verdict-icon {
+            font-size: 12px;
+        }
+
+        .verdict-text {
+            /* font-weight: 500;
+            font-size: 14px; */
+        }
+
+        /* Confidence badge */
+        .confidence-badge {
+            margin-left: auto;
+            padding: 4px 12px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: 500;
+        }
+
+        .confidence-badge.high {
+            background: var(--color-primary-muted);
+            color: var(--color-primary-text);
+        }
+
+        .confidence-badge.medium {
+            background: var(--color-warning-muted);
+            color: var(--color-warning-dark);
+        }
+
+        .confidence-badge.low {
+            background: var(--color-danger-muted);
+            color: var(--color-danger-dark);
+        }
+
+        /* Search badge */
+        .search-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 8px 16px;
+            background: var(--color-info-light);
+            border: 1px solid var(--color-info-border);
+            border-radius: 4px;
+            font-size: 13px;
+            color: var(--color-info-dark);
+            margin-bottom: 16px;
+        }
+
+        .search-badge.offline {
+            background: var(--color-neutral-light);
+            border-color: var(--color-neutral-border);
+            color: var(--color-neutral-dark);
+        }
+
+        /* Error display */
+        .error-container {
+            text-align: center;
+            padding: 12px 12px;
+        }
+
+        .error-icon {
+            font-size: 48px;
+            margin-bottom: 16px;
+        }
+
+        .error-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: var(--color-danger);
+            margin-bottom: 16px;
+        }
+
+        .error-suggestions {
+            text-align: left;
+            list-style: none;
+            padding: 0;
+            margin: 0 0 24px 0;
+        }
+
+        .error-suggestions li {
+            padding: 8px 0;
+            color: var(--color-text-secondary);
+            font-size: 14px;
+            border-bottom: 1px solid var(--color-border);
+        }
+
+        .error-suggestions li:last-child {
+            border-bottom: none;
+        }
+
+        .error-suggestions li::before {
+            content: '→';
+            margin-right: 8px;
+            color: var(--color-primary);
+        }
+
+        .retry-btn {
+            background: var(--color-primary);
+            color: var(--color-text-white);
+            border: none;
+            padding: 12px 24px;
+            border-radius: 6px;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .retry-btn:hover {
+            background: var(--color-primary-dark);
+            transform: translateY(-1px);
+        }
+
+        /* Progress bar */
+        .progress-container {
+            padding: 24px;
+            background: var(--color-background-subtle);
+            border-bottom: 1px solid var(--color-border);
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 6px;
+            background: var(--color-border);
+            border-radius: 3px;
+            overflow: hidden;
+            margin-bottom: 16px;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--color-primary), var(--color-primary-dark));
+            border-radius: 3px;
+            width: 0%;
+            transition: width 0.3s ease;
+            animation: progressPulse 2s ease-in-out infinite;
+        }
+
+        @keyframes progressPulse {
+            0% {
+                opacity: 0.8;
+            }
+
+            50% {
+                opacity: 1;
+            }
+
+            100% {
+                opacity: 0.8;
+            }
+        }
+
+        .progress-text {
+            text-align: center;
+            color: var(--color-text);
+            font-size: 14px;
+            font-weight: 500;
+        }
+
+        /* Sources styling */
+        .sources-section {
+            margin-top: 24px;
+            padding-top: 20px;
+            border-top: 1px solid var(--color-border);
+        }
+
+        .sources-title {
+            font-size: 14px;
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: var(--color-text);
+        }
+
+        .sources-list {
+            margin: 0;
+            padding-left: 20px;
+            list-style-type: disc;
+        }
+
+        .sources-list li {
+            margin-bottom: 6px;
+            font-size: 13px;
+            line-height: 1.4;
+        }
+
+        .sources-list a {
+            color: var(--color-info);
+            text-decoration: none;
+        }
+
+        .sources-list a:hover {
+            text-decoration: underline;
+        }
+
+        /* Section headers in analysis */
+        .section-header {
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--color-primary);
+            margin: 16px 0 8px 0;
+            padding-bottom: 6px;
+            border-bottom: 2px solid var(--color-primary);
+        }
+
+        .section-header:first-child {
+            margin-top: 0;
+        }
+
+        /* List items */
+        .bullet-item,
+        .numbered-item {
+            margin: 6px 0;
+            padding-left: 8px;
+            line-height: 1.6;
+        }
+
+        .numbered-item .num {
+            font-weight: 600;
+            color: var(--color-primary);
+        }
+
+        /* Links in analysis */
+        .analysis-content a {
+            color: var(--color-info);
+            text-decoration: none;
+            word-break: break-word;
+        }
+
+        .analysis-content a:hover {
+            text-decoration: underline;
+        }
+
+        /* Keyboard shortcut hint */
+        .keyboard-hint {
+            position: fixed;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: var(--color-overlay-dark);
+            color: var(--color-text-white);
+            padding: 8px 16px;
+            border-radius: 4px;
+            font-size: 12px;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            pointer-events: none;
+            z-index: 1000;
+        }
+
+        .keyboard-hint.show {
+            opacity: 1;
+        }
+
+        /* Dark mode support */
+        @media (prefers-color-scheme: dark) {
+            :root {
+                /* Override text colors for dark mode */
+                --color-text: rgba(255, 255, 255, 0.87);
+                --color-text-secondary: rgba(255, 255, 255, 0.54);
+                --color-text-placeholder: rgba(255, 255, 255, 0.5);
+
+                /* Override background colors for dark mode */
+                --color-background: #121212;
+                --color-background-alt: #1a1a1a;
+                --color-background-card: #1e1e1e;
+                --color-background-subtle: #2d2d2d;
+                --color-background-hover: #3d3d3d;
+
+                /* Override border colors for dark mode */
+                --color-border: #424242;
+                --color-border-light: #424242;
+
+                /* Dark mode specific colors */
+                --color-primary-text: #81c784;
+            }
+
+            body {
+                background: linear-gradient(135deg, var(--color-background-alt) 0%, var(--color-background) 100%);
+            }
+
+            .settings-panel,
+            .results-container {
+                background: var(--color-background-card);
+                border-color: var(--color-border);
+            }
+
+            .claim-input {
+                background: var(--color-background-subtle);
+                border-color: var(--color-border);
+                color: var(--color-text);
+            }
+
+            .claim-input::placeholder {
+                color: var(--color-text-placeholder);
+            }
+
+            .input-label {
+                color: var(--color-text);
+            }
+
+            .results-header,
+            .progress-container {
+                background: var(--color-background-subtle);
+            }
+
+            .model-selector {
+                background: var(--color-background-subtle);
+                color: var(--color-text-white);
+                border-color: var(--color-border);
+            }
+
+            .model-selector option.tool-capable {
+                color: var(--color-primary-text);
+            }
+        }
+    </style>
+    <script src="sidepanel.js"></script>
+</head>
+
+<body>
+    <!-- <div class="header">
+        <h1>VerifAI</h1>
+    </div> -->
+
+    <div class="content-area">
+        <button id="btnSettings" class="settings-btn">Settings</button>
+        <div id="settingsPanel" class="settings-panel">
+            <div class="settings-section">
+                <div class="settings-title">AI Model Configuration</div>
+                <div class="settings-row">
+                    <select id="modelSelector" class="model-selector">
+                        <option value="">Loading models...</option>
+                    </select>
+                    <button id="btnRefreshModels" class="refresh-models-btn">Refresh</button>
+                </div>
+                <div id="modelStatus" class="model-status">Detecting available models...</div>
+            </div>
+        </div>
+
+        <div class="input-section">
+            <div class="input-label">Claim to Fact-Check</div>
+            <textarea id="claimInput" class="claim-input"
+                placeholder="Select text on a webpage or paste a claim here to fact-check..."></textarea>
+        </div>
+
+        <div class="action-buttons">
+            <button id="btnFactCheck" class="action-btn">Fact-Check</button>
+            <button id="btnClear" class="action-btn clear">Clear</button>
+        </div>
+
+        <div class="results-container">
+            <div class="results-header">
+                <h3>Results</h3>
+                <button id="btnCopy" class="copy-btn">Copy</button>
+            </div>
+            <div id="progressContainer" class="progress-container" style="display: none;">
+                <div class="progress-bar">
+                    <div id="progressFill" class="progress-fill"></div>
+                </div>
+                <div id="progressText" class="progress-text">Analyzing claim...</div>
+            </div>
+            <div id="resultsContent" class="results-content"></div>
+        </div>
+    </div>
+
+    <div id="keyboardHint" class="keyboard-hint">
+        Press Ctrl+Enter to fact-check
+    </div>
+</body>
+
+</html>
